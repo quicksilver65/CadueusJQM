@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Provider Results";
+}
+
+<script type="text/javascript">
+    function MakeFavorite(id) {  
+        dataStore.AddProvider(id);
+        dataStore.SaveList();
+        showMsg();
+    }
+    function showMsg() {
+        $.mobile.showPageLoadingMsg("b", "Creating your favorite", true);
+        setTimeout(function () {
+            $.mobile.hidePageLoadingMsg()
+        }, 800);
+    }
+
+
+</script>
+<style type="text/css">
+    .centerBlock
+    {
+        margin-right: auto;
+        margin-left: auto;
+        display: block;
+        text-align:center;
+    }
+</style>
+<div class="ui-grid-b">
+	<div class="ui-block-a">
+        <div><a class="centerBlock ui-disabled" href="#" data-role="button" data-icon="grid" data-iconpos="notext"></a></div>
+        <div class="centerBlock">Call</div>
+	</div>
+	<div class="ui-block-b">
+        <div><a class="centerBlock ui-disabled" href="#" data-role="button" data-icon="search" data-iconpos="notext"></a></div>
+        <div class="centerBlock">Navigate</div>
+	</div>
+    <div class="ui-block-c">
+        <div><a class="centerBlock ui-disabled" href="#" data-role="button" data-icon="star" data-iconpos="notext"></a></div>
+        <div class="centerBlock">Favorite</div>
+    </div>
+</div>
+
+
+<ul data-role="listview" data-inset="true">
+
+        
+        @if (((CadueusJQM.Models.MedicalProvider[])@ViewBag.Providers).Count() == 0)
+        {
+            <li>No results returned</li>
+        }
+        @foreach (var spec in ViewBag.Providers)
+        {
+            <li id="li_@spec.Id">
+          
+                    <div style="float:left">
+                        <span style="font-weight:bold">@spec.FirstName &nbsp;@spec.LastName</span><br />
+                        @spec.Specialty<br />
+                        @spec.Address&nbsp;&nbsp;@spec.Suite<br />
+                        @spec.City,&nbsp;@spec.State&nbsp;&nbsp;@spec.ZipCode<br />
+                        @string.Format("{0:###-###-####}", @spec.PhoneNumber)<br />                      
+                    </div>
+                    <div style="float:right">
+                        <div data-role="controlgroup" data-type="vertical" >
+                           <a href="tel:@spec.PhoneNumber" data-role="button" data-icon="grid" data-iconpos="notext">call</a>
+                            @Html.ActionLink("map","ShowMap","Home",new{Id=@spec.Id},new{data_role="button", data_icon="search", data_iconpos="notext"})
+                      
+                           <a href="#" data-role="button" data-icon="star" data-iconpos="notext" onclick="MakeFavorite(@spec.Id);">favorite</a>
+                        </div>
+
+                    </div>
+                    <div style="clear:both"></div>
+              
+            </li>
+         
+        }
+</ul>
+

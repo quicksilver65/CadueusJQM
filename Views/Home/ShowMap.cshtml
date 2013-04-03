@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Map Directions";
+}
+@section Header{
+
+    <h1>Map Directions</h1>
+
+}
+<script type="text/javascript">
+    function initialize() {
+        var mapOptions = {
+            center: new google.maps.LatLng(@ViewBag.LatLong.Latitude, @ViewBag.LatLong.Longtitude),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    }
+
+    $(document).ready(function () {
+        $("#map_canvas").width($(window).width());
+        $("#map_canvas").height($(window).height());
+        initialize();
+    });    
+ </script>
+
+<div id="map_canvas"></div>  

@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>@ViewBag.Title</title>
+        <meta name="viewport" content="width=device-width" />
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        @Styles.Render("~/Content/mobileCss", "~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+
+
+    </head>
+    <body>
+        <div data-role="page" data-theme="b">
+            <div data-role="header">
+                @if (IsSectionDefined("Header")) {
+                    @RenderSection("Header")
+                } else {
+                    <h1>@ViewBag.Title</h1>
+                   
+                }
+            </div>
+            <div data-role="content">
+                @RenderBody()
+            </div>
+            <div data-id="myfooter" data-role="footer" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top" >
+                    <ul>
+                        <li>@Html.ActionLink("Home", "Index", "Home",null, new {data_icon="home" })</li>
+                        <li>@Html.ActionLink("Search", "Search", "Home",null, new {data_icon="search" })</li>   
+                        <li><a href="#" data-icon="info" onclick="DisplayFavorites();">Favorites</a></li>
+                        <li>@Html.ActionLink("Information", "Information", "Home",null, new {data_icon="info" })</li>
+                 
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        @Scripts.Render("~/bundles/jquery", "~/bundles/jquerymobile")
+        @RenderSection("scripts", required: false)
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBP2D22n11v4QeQ_qvJrWohEj7GysulwUA&sensor=false"></script>
+        <script type="text/javascript">
+                    var dataStore = {
+                        ProviderList:[],
+                        LoadList: function () {
+                            if ("localStorage" in window && window["localStorage"] != null) {
+                                dataStore.ProviderList = JSON.parse(localStorage.getItem("Providers"));
+                            }
+                            else {
+                                dataStore.ProviderList = JSON.parse(getCookie("Providers"));
+                            }
+
+                        },
+                        AddProvider: function (id) {
+                            if (dataStore.ProviderList !== undefined && dataStore.ProviderList != null) {
+                                $.each(dataStore.ProviderList, function (index, value) {
+                                    if (value === id)
+                                        return;
+                                });
+                            }
+                            else {
+                                dataStore.ProviderList = [];
+                            }
+                            dataStore.ProviderList.push(id);
+                            console.log(id);
+                        },
+                        RemoveProvider:function(id){
+                            $.each(dataStore.ProviderList, function (index, value) {
+                                if (value === id) {
+                                    dataStore.ProviderList.splice(index, 1);
+                                    return;
+                                }
+                            });
+                        },
+                        SaveList: function () {
+                            var jsonStr = JSON.stringify(dataStore.ProviderList);
+                            if ("localStorage" in window && window["localStorage"] != null) {
+                                localStorage.setItem("Providers", jsonStr);
+                            }
+                            else {
+                                setCookie("Providers", jsonStr, 30);
+                            }     
+                        }
+
+                    }
+                    function DisplayFavorites() {
+                        
+                        var str = JSON.stringify(dataStore.ProviderList);
+                        $.mobile.changePage("@Url.Content("~/Home/Favorites")?data=" + str);
+                        
+                    }
+                    function setCookie(c_name, value, exdays) {
+                        var exdate = new Date();
+                        exdate.setDate(exdate.getDate() + exdays);
+                        var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                        document.cookie = c_name + "=" + c_value;
+                    }
+                    function getCookie(c_name) {
+                        var i, x, y, ARRcookies = document.cookie.split(";");
+                        for (i = 0; i < ARRcookies.length; i++) {
+                            x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                            y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                            x = x.replace(/^\s+|\s+$/g, "");
+                            if (x == c_name) {
+                                return unescape(y);
+                            }
+                        }
+                    }
+                    $(document).ready(function () {
+                        dataStore.LoadList();
+                    });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Find A Provider";
+}
+
+
+
+
+@using (Html.BeginForm("FindProviders", "Home"))
+{ 
+
+
+    <div data-role="fieldcontain">
+        <label for="Specialty" class="select">Specialty:</label>
+	    <select name="Specialty" id="Specialty" data-native-menu="false">
+            @foreach (var spec in ViewBag.Specialties)
+            {
+                var str = ((string)spec).Replace(" ", "_");
+                <option value=@str>@spec</option>
+            }
+        </select>
+
+        <label for="City" class="select">City:</label>
+	    <select name="City" id="City" data-native-menu="false">
+            @foreach (var spec in ViewBag.Cities)
+            {
+                var str = ((string)spec).Replace(" ", "_");
+                <option value=@str>@spec</option>
+            }
+        </select>
+    </div>
+
+
+ 
+    <label for="LastName">Last Name:</label>
+    <input type="text" name="lastName" id="LastName"  />
+  
+    <br /><br />
+    <input data-role="button" data-icon="search" type="submit" value="Find Provider" />
+
+}
+
+
+
